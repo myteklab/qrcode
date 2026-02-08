@@ -142,6 +142,7 @@ function updateQRCode() {
 
 function detectQRVersion() {
     const url = qrSettings.targetUrl;
+    if (!url) return;
     const ecLevel = qrSettings.errorCorrection || 'M';
 
     // Byte capacity table for each version at different EC levels

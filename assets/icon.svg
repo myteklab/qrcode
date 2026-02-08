@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1a1a2e"/>
+
+  <!-- QR Code Pattern (Simplified) -->
+  <g transform="translate(106, 106)">
+    <!-- Top-left finder pattern -->
+    <rect x="0" y="0" width="90" height="90" fill="#9333ea" rx="8"/>
+    <rect x="15" y="15" width="60" height="60" fill="#1a1a2e"/>
+    <rect x="30" y="30" width="30" height="30" fill="#a855f7"/>
+
+    <!-- Top-right finder pattern -->
+    <rect x="210" y="0" width="90" height="90" fill="#9333ea" rx="8"/>
+    <rect x="225" y="15" width="60" height="60" fill="#1a1a2e"/>
+    <rect x="240" y="30" width="30" height="30" fill="#a855f7"/>
+
+    <!-- Bottom-left finder pattern -->
+    <rect x="0" y="210" width="90" height="90" fill="#9333ea" rx="8"/>
+    <rect x="15" y="225" width="60" height="60" fill="#1a1a2e"/>
+    <rect x="30" y="240" width="30" height="30" fill="#a855f7"/>
+
+    <!-- Data modules (decorative) -->
+    <rect x="105" y="15" width="15" height="15" fill="#ec4899"/>
+    <rect x="135" y="15" width="15" height="15" fill="#ec4899"/>
+    <rect x="165" y="15" width="15" height="15" fill="#ec4899"/>
+
+    <rect x="105" y="45" width="15" height="15" fill="#a855f7"/>
+    <rect x="135" y="45" width="15" height="15" fill="#ec4899"/>
+    <rect x="165" y="45" width="15" height="15" fill="#a855f7"/>
+
+    <rect x="105" y="75" width="15" height="15" fill="#ec4899"/>
+    <rect x="135" y="75" width="15" height="15" fill="#a855f7"/>
+    <rect x="165" y="75" width="15" height="15" fill="#ec4899"/>
+
+    <rect x="15" y="105" width="15" height="15" fill="#a855f7"/>
+    <rect x="45" y="105" width="15" height="15" fill="#ec4899"/>
+    <rect x="75" y="105" width="15" height="15" fill="#a855f7"/>
+
+    <rect x="15" y="135" width="15" height="15" fill="#ec4899"/>
+    <rect x="45" y="135" width="15" height="15" fill="#a855f7"/>
+    <rect x="75" y="135" width="15" height="15" fill="#ec4899"/>
+
+    <rect x="15" y="165" width="15" height="15" fill="#a855f7"/>
+    <rect x="45" y="165" width="15" height="15" fill="#ec4899"/>
+    <rect x="75" y="165" width="15" height="15" fill="#a855f7"/>
+
+    <!-- Center modules -->
+    <rect x="105" y="105" width="90" height="15" fill="#ec4899"/>
+    <rect x="105" y="135" width="15" height="60" fill="#a855f7"/>
+    <rect x="135" y="135" width="60" height="15" fill="#ec4899"/>
+    <rect x="180" y="150" width="15" height="45" fill="#a855f7"/>
+    <rect x="150" y="165" width="30" height="15" fill="#ec4899"/>
+    <rect x="135" y="180" width="15" height="15" fill="#a855f7"/>
+
+    <!-- Bottom-right corner modules -->
+    <rect x="210" y="210" width="15" height="15" fill="#ec4899"/>
+    <rect x="240" y="210" width="15" height="15" fill="#a855f7"/>
+    <rect x="270" y="210" width="15" height="15" fill="#ec4899"/>
+    <rect x="210" y="240" width="15" height="15" fill="#a855f7"/>
+    <rect x="240" y="240" width="15" height="15" fill="#ec4899"/>
+    <rect x="270" y="240" width="15" height="15" fill="#a855f7"/>
+    <rect x="210" y="270" width="15" height="15" fill="#ec4899"/>
+    <rect x="240" y="270" width="15" height="15" fill="#a855f7"/>
+    <rect x="270" y="270" width="15" height="15" fill="#ec4899"/>
+  </g>
+</svg>

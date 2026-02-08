@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Lab</title>
+    <link rel="stylesheet" href="css/qrcode.css">
+    <!-- QR Code Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header-compact">
+            <div class="header-left">
+                <h1>QR Lab</h1>
+            </div>
+
+            <div class="header-center">
+                <button id="export-btn" class="btn btn-secondary" onclick="showExportModal()">
+                    Export PNG
+                </button>
+                <button id="edu-mode-btn" class="btn btn-secondary" onclick="toggleEducationalMode()">
+                    Learn Mode
+                </button>
+            </div>
+
+            <div class="header-right">
+                <div class="help-dropdown">
+                    <button class="btn-help" onclick="toggleHelpMenu(event)">
+                        Help
+                    </button>
+                    <div class="help-menu" id="help-menu" style="display: none;">
+                        <button onclick="showHelp('what-is-qr'); closeHelpMenu()">What are QR Codes?</button>
+                        <button onclick="showHelp('how-qr-works'); closeHelpMenu()">How They Work</button>
+                        <button onclick="showHelp('anatomy'); closeHelpMenu()">QR Code Anatomy</button>
+                        <button onclick="showHelp('best-practices'); closeHelpMenu()">Best Practices</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Create Tab -->
+            <div class="tab-content active" id="create-tab">
+                <div class="editor-layout">
+                    <!-- Left Panel - Settings -->
+                    <div class="settings-panel">
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3>Target URL</h3>
+                            </div>
+                            <input type="text" id="target-url" class="url-input"
+                                   placeholder="https://example.com"
+                                   value="https://example.com">
+                            <div id="url-error" class="error-message"></div>
+                        </div>
+
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3>Size</h3>
+                            </div>
+                            <div class="slider-container">
+                                <input type="range" id="qr-size" min="128" max="512" value="256" step="32">
+                                <span id="size-value">256px</span>
+                            </div>
+                        </div>
+
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3>Error Correction</h3>
+                                <button class="help-btn" onclick="showHelp('error-correction')">?</button>
+                            </div>
+                            <select id="error-correction" class="select-input">
+                                <option value="L">Low (7% recovery)</option>
+                                <option value="M" selected>Medium (15% recovery)</option>
+                                <option value="Q">Quartile (25% recovery)</option>
+                                <option value="H">High (30% recovery)</option>
+                            </select>
+                        </div>
+
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3>Colors</h3>
+                                <button class="help-btn" onclick="showHelp('customization')">?</button>
+                            </div>
+                            <div class="color-inputs">
+                                <div class="color-input-group">
+                                    <label>Foreground</label>
+                                    <input type="color" id="fg-color" value="#000000">
+                                </div>
+                                <div class="color-input-group">
+                                    <label>Background</label>
+                                    <input type="color" id="bg-color" value="#ffffff">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel - Preview -->
+                    <div class="preview-panel">
+                        <div class="preview-header">
+                            <h3>Preview</h3>
+                        </div>
+                        <div class="qr-preview-wrapper" id="qr-preview-container">
+                            <div id="qr-preview"></div>
+                            <!-- QR Anatomy Overlay (shown in educational mode) -->
+                            <div id="qr-anatomy-overlay" style="display: none;"></div>
+                        </div>
+                        <!-- QR Code Info Display -->
+                        <div id="qr-info-display" style="display: none; margin-top: 15px; padding: 12px; background: rgba(147, 51, 234, 0.1); border-radius: 8px; border-left: 3px solid #9333ea;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.85em; color: #999; margin-bottom: 4px;">QR Version</div>
+                                    <div style="font-size: 1.3em; font-weight: bold; color: #9333ea;" id="qr-version-display">-</div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.85em; color: #999; margin-bottom: 4px;">Module Size</div>
+                                    <div style="font-size: 1.3em; font-weight: bold; color: #9333ea;" id="qr-modules-display">-</div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.85em; color: #999; margin-bottom: 4px;">Data Capacity</div>
+                                    <div style="font-size: 1.3em; font-weight: bold; color: #9333ea;" id="qr-capacity-display">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Educational Mode Panel -->
+                <div id="educational-panel" class="educational-panel" style="display: none;">
+                    <div class="edu-header">
+                        <h3>Educational Tools</h3>
+                        <button class="btn btn-small" onclick="toggleEducationalMode()">Close</button>
+                    </div>
+
+                    <div class="edu-tabs">
+                        <button class="edu-tab active" data-tab="anatomy" onclick="switchEduTab('anatomy')">
+                            QR Anatomy
+                        </button>
+                        <button class="edu-tab" data-tab="damage" onclick="switchEduTab('damage')">
+                            Damage Test
+                        </button>
+                        <button class="edu-tab" data-tab="data" onclick="switchEduTab('data')">
+                            Data Encoding
+                        </button>
+                    </div>
+
+                    <div class="edu-content">
+                        <!-- Anatomy Tab -->
+                        <div id="edu-anatomy" class="edu-tab-content active">
+                            <p style="margin-bottom: 15px; color: #ccc;">Click the highlighted regions below to learn what each part of a QR code does!</p>
+
+                            <div class="anatomy-legend" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(0, 0, 0, 0.7); border: 1px solid #666;"></span>
+                                    <span>Position Markers (Finder Patterns)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(59, 130, 246, 0.5);"></span>
+                                    <span>Timing Patterns</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(16, 185, 129, 0.5);"></span>
+                                    <span>Data & Error Correction</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(239, 68, 68, 0.5);"></span>
+                                    <span>Format Information</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(0, 0, 0, 0.7); border: 1px solid #666;"></span>
+                                    <span>Alignment Pattern</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(132, 204, 22, 0.7);"></span>
+                                    <span>Version Information</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: rgba(239, 68, 68, 0.5);"></span>
+                                    <span>Quiet Zone</span>
+                                </div>
+                            </div>
+
+                            <!-- QR Code Structure Diagram -->
+                            <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <img src="https://www.mytekos.com/beta/file.php?file=1-5867-0.png"
+                                     alt="QR Code Structure Diagram"
+                                     style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 6px;">
+                                <p style="text-align: center; margin-top: 10px; font-size: 0.85em; color: #999;">QR code structure and components</p>
+                            </div>
+
+                            <div id="anatomy-info" class="anatomy-info">
+                                <p style="color: #999; font-style: italic;">Hover over the QR code to see detailed information about each region.</p>
+                            </div>
+                        </div>
+
+                        <!-- Damage Test Tab -->
+                        <div id="edu-damage" class="edu-tab-content">
+                            <p style="margin-bottom: 15px; color: #ccc;">Click on the QR code to damage it and test error correction! Move your mouse over the QR code to see the brush size preview.</p>
+                            <div style="background: rgba(245, 158, 11, 0.1); padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #f59e0b;">
+                                <p style="margin: 0; font-size: 0.9em; color: #ccc;"><strong style="color: #f59e0b;">Note:</strong> This is an educational simulation. Real-world QR code damage affects data modules, not pixels. The thresholds shown are approximate - actual scannability depends on damage location (e.g., damaging position markers is worse than damaging data areas).</p>
+                            </div>
+
+                            <div class="damage-controls">
+                                <div class="damage-stats">
+                                    <div class="damage-stat">
+                                        <span class="damage-label">Damage Level:</span>
+                                        <span id="damage-percentage" class="damage-value">0%</span>
+                                    </div>
+                                    <div class="damage-stat">
+                                        <span class="damage-label">Status:</span>
+                                        <span id="damage-status" class="damage-value" style="color: #10b981;">Scannable</span>
+                                    </div>
+                                </div>
+
+                                <div class="damage-brush-control">
+                                    <label style="display: block; margin-bottom: 8px; color: #ccc; font-size: 0.9em;">
+                                        Damage Brush Size: <span id="brush-size-value" style="color: #a855f7; font-weight: bold;">Medium</span>
+                                    </label>
+                                    <input type="range" id="damage-brush-size" min="1" max="5" value="3" step="1"
+                                           style="width: 100%; cursor: pointer;"
+                                           oninput="updateBrushSize(this.value)">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8em; color: #999; margin-top: 5px;">
+                                        <span>Tiny</span>
+                                        <span>Small</span>
+                                        <span>Medium</span>
+                                        <span>Large</span>
+                                        <span>Huge</span>
+                                    </div>
+                                </div>
+
+                                <div class="damage-buttons">
+                                    <button class="btn btn-small" onclick="resetDamage()">Reset</button>
+                                    <button class="btn btn-small" onclick="randomDamage(10)">Add 10% Damage</button>
+                                    <button class="btn btn-small" onclick="randomDamage(25)">Add 25% Damage</button>
+                                </div>
+                            </div>
+
+                            <div class="damage-info">
+                                <div class="info-box" style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6;">
+                                    <strong>Current Error Correction: <span id="current-ec-level">M (15%)</span></strong>
+                                    <p style="margin: 8px 0 0 0; font-size: 0.9em;">This QR code can survive up to <span id="ec-percentage">15%</span> damage and still scan correctly.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Encoding Tab -->
+                        <div id="edu-data" class="edu-tab-content">
+                            <p style="margin-bottom: 15px; color: #ccc;">See how your URL is encoded into the QR code!</p>
+
+                            <div class="data-encoding-steps">
+                                <div class="encoding-step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-content">
+                                        <h4>Original URL</h4>
+                                        <div class="code-display" id="original-url">https://example.com</div>
+                                        <small><span id="url-char-count">19</span> characters</small>
+                                    </div>
+                                </div>
+
+                                <div class="encoding-arrow">&darr;</div>
+
+                                <div class="encoding-step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-content">
+                                        <h4>Text to Binary</h4>
+                                        <div class="code-display binary" id="binary-display">Loading...</div>
+                                        <small><span id="binary-bits">0</span> bits of data</small>
+                                    </div>
+                                </div>
+
+                                <div class="encoding-arrow">&darr;</div>
+
+                                <div class="encoding-step">
+                                    <div class="step-number">3</div>
+                                    <div class="step-content">
+                                        <h4>Error Correction Added</h4>
+                                        <div class="data-breakdown">
+                                            <div class="data-bar">
+                                                <div class="data-portion data-actual" id="data-actual-bar" style="width: 65%;">
+                                                    <span>Data</span>
+                                                </div>
+                                                <div class="data-portion data-ec" id="data-ec-bar" style="width: 35%;">
+                                                    <span>Error Correction</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small><span id="total-capacity">0</span> total modules in QR code</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-box" style="background: rgba(147, 51, 234, 0.1); border-left: 3px solid #a855f7; margin-top: 20px;">
+                                <strong>Did you know?</strong>
+                                <p style="margin: 8px 0 0 0; font-size: 0.9em;">Higher error correction levels add more redundant data, making your QR code larger but more durable!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="help-title">Help</h2>
+                <button class="modal-close" onclick="closeHelp()">&times;</button>
+            </div>
+            <div class="modal-body" id="help-content">
+                <!-- Dynamic help content loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="export-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Export QR Code</h2>
+                <button class="modal-close" onclick="closeExportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px;">Download your QR code as a PNG image:</p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn btn-primary" onclick="exportToComputer()" style="padding: 16px; font-size: 1.1em;">
+                        Download to Computer
+                        <div style="font-size: 0.85em; font-weight: normal; margin-top: 4px; opacity: 0.9;">
+                            Save PNG file to your downloads folder
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/qrcode-app.js"></script>
+</body>
+</html>

@@ -71,7 +71,7 @@ function setupEventListeners() {
     // URL input
     const urlInput = document.getElementById('target-url');
     urlInput.addEventListener('input', debounce(function() {
-        qrSettings.targetUrl = this.value;
+        qrSettings.targetUrl = urlInput.value;
         updateQRCode();
         window.hasUnsavedChanges = true;
     }, 500));
